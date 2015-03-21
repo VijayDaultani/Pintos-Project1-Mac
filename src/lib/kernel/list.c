@@ -34,6 +34,7 @@
 static bool is_sorted (struct list_elem *a, struct list_elem *b,
                        list_less_func *less, void *aux) UNUSED;
 
+
 /* Returns true if ELEM is a head, false otherwise. */
 static inline bool
 is_head (struct list_elem *elem)
@@ -213,6 +214,8 @@ list_push_front (struct list *list, struct list_elem *elem)
 
 /* Inserts ELEM at the end of LIST, so that it becomes the
    back in LIST. */
+/* Inspite of inserting ELEM at the end of LIST, it will
+   insert according to priority of the ELEM */
 void
 list_push_back (struct list *list, struct list_elem *elem)
 {

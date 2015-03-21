@@ -315,8 +315,10 @@ thread_yield (void)
   ASSERT (!intr_context ());
 
   old_level = intr_disable ();
-  if (cur != idle_thread) 
-    list_push_back (&ready_list, &cur->elem);
+  //Rather than list_push_back use list_ordered_push
+  if (cur != idle_thread)
+    //list_push_back (&ready_list, &cur->elem);
+    list_insert_ordered (&ready_list, &cur->elem, &thread_compare, NULL);
   cur->status = THREAD_READY;
   schedule ();
   intr_set_level (old_level);
@@ -580,6 +582,23 @@ allocate_tid (void)
   lock_release (&tid_lock);
 
   return tid;
+}
+
+/* This Function will return true if A < B else false.
+   This Function will be used for mainting Priority Queue.
+*/
+bool
+thread_compare (const struct list_elem *a,
+		     const struct list_elem *b,
+		     void *aux)
+{
+  struct thread *a_thread = list_entry (a, struct thread, elem);
+  struct thread *b_thread = list_entry (b, struct thread, elem);
+
+  if(a_thread->priority < b_thread->priority)
+	return true;
+  else
+        return false;
 }
 
 /* Offset of `stack' member within `struct thread'.
